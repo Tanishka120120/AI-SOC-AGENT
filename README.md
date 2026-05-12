@@ -54,6 +54,7 @@ Tasks completed:
 ## Outcome
 
 By the end of Day 1, the basic SOC dashboard was successfully running on Streamlit and the development environment was fully configured for further implementation.
+<img width="940" height="922" alt="abae77a4-3e9a-46df-913e-78100d00b97b" src="https://github.com/user-attachments/assets/19a24053-59c6-4438-93e4-f587efc30e35" />
 
 ---
 
@@ -119,7 +120,6 @@ The system can now:
 
 ## Threat Intelligence Workflow
 
-```text
 Incoming Security Log
         ↓
 Extract IP Address
@@ -131,3 +131,8 @@ Check AbuseIPDB Reputation
 Generate Threat Score
         ↓
 Display Threat Alert
+
+OUTPUT:
+<img width="945" height="925" alt="62e6af19-a495-418c-988b-e17beff7ecb8" src="https://github.com/user-attachments/assets/43a1d4ff-f028-48e2-9e64-39970d0dbd11" />
+changing data of security logs:
+<img width="936" height="948" alt="ff901e56-060a-477e-9732-04f9c002a829" src="https://github.com/user-attachments/assets/e2b9b7de-0959-4493-a5d7-d578b40046c5" />
