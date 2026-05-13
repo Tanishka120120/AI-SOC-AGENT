@@ -1,4 +1,28 @@
-import requests
+import random
+
+
+def check_abuseipdb(ip):
+
+    malicious_ips = {
+        "185.23.45.1": 85,
+        "91.200.12.5": 92,
+        "103.45.67.8": 70
+    }
+
+    return malicious_ips.get(ip, random.randint(0, 20))
+
+
+def check_virustotal(ip):
+
+    malicious_ips = {
+        "185.23.45.1": 8,
+        "91.200.12.5": 12,
+        "103.45.67.8": 5
+    }
+
+    return malicious_ips.get(ip, random.randint(0, 2))
+
+'''import requests
 import os
 from dotenv import load_dotenv
 
@@ -57,4 +81,4 @@ def check_virustotal(ip):
         return malicious
 
     except:
-        return 0
+        return 0'''
