@@ -36,11 +36,11 @@ The system is designed to:
 
 ---
 
-# Day 1 — Project Setup & Initial Dashboard
+# Part 1 — Project Setup & Initial Dashboard
 
 ## Work Completed
 
-The first day focused on setting up the development environment and preparing the basic structure of the project.
+The first part focused on setting up the development environment and preparing the basic structure of the project.
 
 Tasks completed:
 
@@ -53,16 +53,16 @@ Tasks completed:
 
 ## Outcome
 
-By the end of Day 1, the basic SOC dashboard was successfully running on Streamlit and the development environment was fully configured for further implementation.
+By the end of part 1, the basic SOC dashboard was successfully running on Streamlit and the development environment was fully configured for further implementation.
 <img width="940" height="922" alt="abae77a4-3e9a-46df-913e-78100d00b97b" src="https://github.com/user-attachments/assets/19a24053-59c6-4438-93e4-f587efc30e35" />
 
 ---
 
-# Day 2 — Real-Time Security Log Simulation
+# Part 2 — Real-Time Security Log Simulation
 
 ## Work Completed
 
-The second day focused on simulating how real SOC systems receive and process security logs continuously.
+The second part focused on simulating how real SOC systems receive and process security logs continuously.
 
 Tasks completed:
 
@@ -94,11 +94,11 @@ The dashboard now behaves like a real-time SOC monitoring system by continuously
 
 ---
 
-# Day 3 — Threat Intelligence Integration
+# Part 3 — Threat Intelligence Integration
 
 ## Work Completed
 
-The third day focused on integrating external threat intelligence services to identify malicious IP addresses.
+The third part focused on integrating external threat intelligence services to identify malicious IP addresses.
 
 Tasks completed:
 
@@ -136,3 +136,31 @@ OUTPUT:
 <img width="945" height="925" alt="62e6af19-a495-418c-988b-e17beff7ecb8" src="https://github.com/user-attachments/assets/43a1d4ff-f028-48e2-9e64-39970d0dbd11" />
 changing data of security logs:
 <img width="936" height="948" alt="ff901e56-060a-477e-9732-04f9c002a829" src="https://github.com/user-attachments/assets/e2b9b7de-0959-4493-a5d7-d578b40046c5" />
+
+Part 4 — Hybrid AI Risk Scoring & SOC Decision Engine
+
+On Part 4, the AI SOC Analyst system was upgraded with a hybrid threat detection architecture combining rule-based cybersecurity logic with machine learning-based anomaly detection. A risk scoring engine was developed to classify incoming alerts into low, medium, and high severity levels based on multiple security parameters such as failed login attempts, suspicious geographical locations, abnormal data transfer activity, and threat intelligence scores.
+
+Additionally, an Isolation Forest machine learning model was integrated to identify unusual behavioral patterns and anomalies within the security logs. The dashboard was further enhanced by separating raw security logs, threat intelligence analysis, and SOC response decisions into multiple structured tables, creating a more realistic SOC workflow visualization.
+
+The SOC Decision Engine now automatically generates recommendations such as monitoring suspicious activity or escalating high-risk incidents to a SOC analyst for further investigation.
+
+Features Implemented
+Hybrid AI-based threat detection
+Rule-based risk scoring engine
+Isolation Forest anomaly detection
+Severity classification (Low/Medium/High)
+Automated SOC decision engine
+Separate dashboards for:
+Raw security logs
+Threat intelligence analysis
+SOC response decisions
+
+Part 4 Output
+AI-based risk scoring implemented
+ML anomaly detection integrated
+Automated SOC decision engine created
+Hybrid threat analysis dashboard completed
+<img width="1600" height="790" alt="2005e10a-e50d-49f8-8687-2e42d4b2d208" src="https://github.com/user-attachments/assets/277c1cd5-d4a7-4081-b636-ada4758738ab" />
+<img width="1600" height="817" alt="656a120c-e537-490a-95a6-697080d1c49f" src="https://github.com/user-attachments/assets/dc700ce4-3018-4890-9bd7-f53bab0b2b97" />
+<img width="1600" height="807" alt="fbe51ca6-e329-47dd-89d7-44b895aaf158" src="https://github.com/user-attachments/assets/2e9c5aca-2cdc-4fbe-b264-01633f68bf33" />
