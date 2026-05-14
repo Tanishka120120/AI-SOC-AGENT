@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import time
+import plotly.express as px
 
 from utils.threat_intel import (
     check_abuseipdb,
@@ -16,7 +17,13 @@ from utils.ml_model import (
     detect_anomalies
 )
 
-# ---------------- PAGE CONFIG ----------------
+from utils.ai_agent import (
+    generate_soc_response
+)
+
+# ==================================================
+# PAGE CONFIG
+# ==================================================
 
 st.set_page_config(
     page_title="AI SOC Dashboard",
@@ -27,14 +34,16 @@ st.title("AI SOC Analyst Dashboard")
 
 st.subheader("Real-Time Security Monitoring")
 
-# ---------------- READ LOGS ----------------
+# ==================================================
+# READ LOGS
+# ==================================================
 
 logs = pd.read_csv("logs/security_logs.csv")
 
 # Apply ML anomaly detection
 logs = detect_anomalies(logs)
 
-# Placeholder for live updates
+# Placeholder for real-time updates
 placeholder = st.empty()
 
 # Store analysis results
@@ -43,13 +52,18 @@ analysis_results = []
 # Store SOC decisions
 soc_decisions = []
 
-# ---------------- REAL-TIME STREAMING ----------------
+# Store AI explanations
+ai_explanations = []
+
+# ==================================================
+# REAL-TIME STREAMING
+# ==================================================
 
 for i in range(len(logs)):
 
     current_logs = logs.iloc[:i + 1].copy()
 
-    # Current latest log
+    # Latest log
     latest_log = current_logs.iloc[-1]
 
     # Extract values
@@ -63,13 +77,17 @@ for i in range(len(logs)):
 
     anomaly = latest_log["anomaly"]
 
-    # ---------------- THREAT INTELLIGENCE ----------------
+    # ==================================================
+    # THREAT INTELLIGENCE
+    # ==================================================
 
     abuse_score = check_abuseipdb(current_ip)
 
     vt_score = check_virustotal(current_ip)
 
-    # ---------------- RISK SCORING ----------------
+    # ==================================================
+    # RISK SCORING
+    # ==================================================
 
     risk_score = calculate_risk_score(
         failed_logins,
@@ -81,7 +99,9 @@ for i in range(len(logs)):
 
     severity = classify_alert(risk_score)
 
-    # ---------------- ML STATUS ----------------
+    # ==================================================
+    # ML STATUS
+    # ==================================================
 
     ml_status = (
         "Suspicious"
@@ -89,7 +109,9 @@ for i in range(len(logs)):
         else "Normal"
     )
 
-    # ---------------- FINAL SOC DECISION ----------------
+    # ==================================================
+    # SOC DECISION ENGINE
+    # ==================================================
 
     if severity == "HIGH" or anomaly == -1:
 
@@ -109,11 +131,30 @@ for i in range(len(logs)):
             "No Action Needed"
         )
 
-    # ---------------- SAVE ANALYSIS ----------------
+    # ==================================================
+    # AI SOC ANALYSIS
+    # ==================================================
+
+    ai_response = generate_soc_response(
+        current_ip,
+        failed_logins,
+        country,
+        risk_score,
+        severity,
+        anomaly
+    )
+
+    # ==================================================
+    # SAVE ANALYSIS RESULTS
+    # ==================================================
 
     analysis_results.append({
 
         "IP": current_ip,
+
+        "Failed Logins": failed_logins,
+
+        "Country": country,
 
         "AbuseIPDB Score": abuse_score,
 
@@ -126,7 +167,9 @@ for i in range(len(logs)):
         "ML Status": ml_status
     })
 
-    # ---------------- SAVE SOC DECISION ----------------
+    # ==================================================
+    # SAVE SOC DECISIONS
+    # ==================================================
 
     soc_decisions.append({
 
@@ -139,7 +182,23 @@ for i in range(len(logs)):
         "SOC Decision": decision
     })
 
-    # Convert to dataframe
+    # ==================================================
+    # SAVE AI EXPLANATIONS
+    # ==================================================
+
+    ai_explanations.append({
+
+        "IP": current_ip,
+
+        "Severity": severity,
+
+        "AI Threat Analysis": ai_response
+    })
+
+    # ==================================================
+    # CONVERT TO DATAFRAMES
+    # ==================================================
+
     analysis_df = pd.DataFrame(
         analysis_results
     )
@@ -148,7 +207,13 @@ for i in range(len(logs)):
         soc_decisions
     )
 
-    # ---------------- DASHBOARD ----------------
+    ai_df = pd.DataFrame(
+        ai_explanations
+    )
+
+    # ==================================================
+    # DASHBOARD
+    # ==================================================
 
     with placeholder.container():
 
@@ -160,11 +225,14 @@ for i in range(len(logs)):
 
         st.dataframe(current_logs)
 
-        # ---------------- METRICS ----------------
+        # ==================================================
+        # METRICS
+        # ==================================================
 
         col1, col2 = st.columns(2)
 
         with col1:
+
             st.metric(
                 label="Total Alerts",
                 value=len(current_logs)
@@ -175,13 +243,14 @@ for i in range(len(logs)):
         ]
 
         with col2:
+
             st.metric(
                 label="High Risk Alerts",
                 value=len(high_risk_logs)
             )
 
         # ==================================================
-        # TABLE 2 — THREAT ANALYSIS
+        # TABLE 2 — THREAT INTELLIGENCE
         # ==================================================
 
         st.subheader(
@@ -201,6 +270,16 @@ for i in range(len(logs)):
         st.dataframe(decision_df)
 
         # ==================================================
+        # TABLE 4 — AI THREAT EXPLANATIONS
+        # ==================================================
+
+        st.subheader(
+            "AI Threat Explanations"
+        )
+
+        st.dataframe(ai_df)
+
+        # ==================================================
         # CURRENT ALERT SUMMARY
         # ==================================================
 
@@ -209,24 +288,29 @@ for i in range(len(logs)):
         col3, col4, col5 = st.columns(3)
 
         with col3:
+
             st.metric(
                 label="Current IP",
                 value=current_ip
             )
 
         with col4:
+
             st.metric(
                 label="Risk Score",
                 value=risk_score
             )
 
         with col5:
+
             st.metric(
                 label="Severity",
                 value=severity
             )
 
-        # ---------------- THREAT STATUS ----------------
+        # ==================================================
+        # THREAT STATUS
+        # ==================================================
 
         if severity == "HIGH":
 
@@ -246,7 +330,9 @@ for i in range(len(logs)):
                 "Low Severity Activity"
             )
 
-        # ---------------- ML RESULT ----------------
+        # ==================================================
+        # ML RESULT
+        # ==================================================
 
         if anomaly == -1:
 
@@ -260,6 +346,82 @@ for i in range(len(logs)):
                 "ML Model: Normal Behavior"
             )
 
-    # ---------------- REAL-TIME DELAY ----------------
+        # ==================================================
+        # PLOTLY CHARTS
+        # ==================================================
+
+        # ---------------- SEVERITY DISTRIBUTION ----------------
+
+        st.subheader("Severity Distribution")
+
+        severity_counts = analysis_df[
+            "Severity"
+        ].value_counts()
+
+        fig1 = px.pie(
+            values=severity_counts.values,
+            names=severity_counts.index,
+            title="Threat Severity Distribution"
+        )
+
+        st.plotly_chart(
+            fig1,
+            use_container_width=True
+        )
+
+        # ---------------- FAILED LOGIN ANALYSIS ----------------
+
+        st.subheader("Failed Login Analysis")
+
+        fig2 = px.bar(
+            analysis_df,
+            x="IP",
+            y="Failed Logins",
+            color="Severity",
+            title="Failed Logins by IP"
+        )
+
+        st.plotly_chart(
+            fig2,
+            use_container_width=True
+        )
+
+        # ---------------- RISK SCORE TREND ----------------
+
+        st.subheader("Risk Score Trend")
+
+        fig3 = px.line(
+            analysis_df,
+            y="Risk Score",
+            title="Risk Score Trend"
+        )
+
+        st.plotly_chart(
+            fig3,
+            use_container_width=True
+        )
+
+        # ---------------- COUNTRY THREAT ANALYSIS ----------------
+
+        st.subheader("Threat Activity by Country")
+
+        country_counts = analysis_df[
+            "Country"
+        ].value_counts()
+
+        fig4 = px.bar(
+            x=country_counts.index,
+            y=country_counts.values,
+            title="Threats by Country"
+        )
+
+        st.plotly_chart(
+            fig4,
+            use_container_width=True
+        )
+
+    # ==================================================
+    # REAL-TIME DELAY
+    # ==================================================
 
     time.sleep(0.2)
