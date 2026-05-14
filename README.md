@@ -164,3 +164,41 @@ Hybrid threat analysis dashboard completed
 <img width="1600" height="790" alt="2005e10a-e50d-49f8-8687-2e42d4b2d208" src="https://github.com/user-attachments/assets/277c1cd5-d4a7-4081-b636-ada4758738ab" />
 <img width="1600" height="817" alt="656a120c-e537-490a-95a6-697080d1c49f" src="https://github.com/user-attachments/assets/dc700ce4-3018-4890-9bd7-f53bab0b2b97" />
 <img width="1600" height="807" alt="fbe51ca6-e329-47dd-89d7-44b895aaf158" src="https://github.com/user-attachments/assets/2e9c5aca-2cdc-4fbe-b264-01633f68bf33" />
+
+## Task 5 — AI SOC Analysis & Threat Visualization
+
+* Implemented advanced SOC detection and monitoring features within the dashboard.
+
+* Added a hybrid threat analysis system combining:
+
+  * Rule-based risk scoring
+  * Machine learning anomaly detection using Isolation Forest
+
+* Developed an AI-powered incident reporting module that generates short SOC-style threat explanations for suspicious IP addresses.
+
+* Enhanced the SOC Decision Engine to automatically classify activities into:
+
+  * High Risk
+  * Medium Risk
+  * Low Risk
+
+* Integrated multiple security visualization graphs including:
+
+  * Threat severity distribution
+  * Failed login analysis
+  * Risk score trends
+  * Country-based threat activity analysis
+
+* Improved real-time dashboard monitoring with intelligent threat evaluation and automated alert analysis.
+
+### Outcome
+
+By the end of task 5, the SOC platform was capable of performing intelligent threat detection, AI-assisted incident analysis, anomaly detection, automated SOC decision-making, and real-time security visualization through an interactive dashboard.
+<img width="1600" height="798" alt="d95ddccd-e236-43c3-8c93-7d21bacaa9d1" src="https://github.com/user-attachments/assets/d46a67d6-a8a2-47c7-a305-97cdc7f13f36" />
+<img width="1600" height="793" alt="e640f0cf-93d4-49b0-bce6-7d0e93e0e0f8" src="https://github.com/user-attachments/assets/5bd9cc46-3604-4b7d-8dd6-f846668bf98c" />
+<img width="1600" height="769" alt="d86a7f16-e7fe-4911-a44d-68a00cd3824e" src="https://github.com/user-attachments/assets/e61be615-f76f-4025-8e6c-15da7dc7a0b5" />
+<img width="1600" height="785" alt="05dd7493-08fa-44c3-8660-9ed58a228ac4" src="https://github.com/user-attachments/assets/fb703626-3bc2-4129-b8c4-51da985315f2" />
+<img width="1600" height="795" alt="005151f8-69e4-4686-8d88-e7c3754291b7" src="https://github.com/user-attachments/assets/df8087d1-562f-4a1c-9b3d-dd1cde50419d" />
+<img width="1600" height="718" alt="a03075e5-50d3-496b-a1b0-0f8f00a6012c" src="https://github.com/user-attachments/assets/c2786f19-5f01-494a-b137-4b7cb767490e" />
+<img width="1600" height="613" alt="317ab98a-8c20-4faf-b43f-2763a36502bb" src="https://github.com/user-attachments/assets/7fa7fdf5-5fb9-4728-b51d-b24ef54800cf" />
+
