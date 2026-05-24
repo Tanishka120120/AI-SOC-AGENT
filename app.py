@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import time
 import plotly.express as px
+from fpdf import FPDF
 
 from utils.threat_intel import (
     check_abuseipdb,
@@ -47,7 +48,6 @@ logs = pd.read_csv(
 # Apply ML anomaly detection
 logs = detect_anomalies(logs)
 
-# Placeholder
 placeholder = st.empty()
 
 # ==================================================
@@ -55,10 +55,77 @@ placeholder = st.empty()
 # ==================================================
 
 analysis_results = []
-
 soc_decisions = []
-
 ai_explanations = []
+
+# ==================================================
+# PDF REPORT FUNCTION
+# ==================================================
+
+def generate_pdf_report(
+    ip,
+    severity,
+    ml_status,
+    abuse_score,
+    vt_score,
+    risk_score,
+    decision,
+    ai_analysis
+):
+
+    pdf = FPDF()
+
+    pdf.add_page()
+
+    pdf.set_font("Arial", "B", 18)
+
+    pdf.cell(
+        200,
+        10,
+        txt="AI SOC Incident Report",
+        ln=True,
+        align="C"
+    )
+
+    pdf.ln(10)
+
+    pdf.set_font("Arial", "B", 12)
+
+    pdf.cell(200, 10, txt=f"IP Address: {ip}", ln=True)
+
+    pdf.cell(200, 10, txt=f"Severity: {severity}", ln=True)
+
+    pdf.cell(200, 10, txt=f"ML Status: {ml_status}", ln=True)
+
+    pdf.cell(200, 10, txt=f"AbuseIPDB Score: {abuse_score}", ln=True)
+
+    pdf.cell(200, 10, txt=f"VirusTotal Detections: {vt_score}", ln=True)
+
+    pdf.cell(200, 10, txt=f"Risk Score: {risk_score}", ln=True)
+
+    pdf.cell(200, 10, txt=f"SOC Decision: {decision}", ln=True)
+
+    pdf.ln(10)
+
+    pdf.set_font("Arial", "B", 14)
+
+    pdf.cell(200, 10, txt="AI Threat Analysis", ln=True)
+
+    pdf.ln(5)
+
+    pdf.set_font("Arial", "", 11)
+
+    pdf.multi_cell(
+        0,
+        8,
+        txt=ai_analysis
+    )
+
+    filename = f"{ip}_incident_report.pdf"
+
+    pdf.output(filename)
+
+    return filename
 
 # ==================================================
 # REAL-TIME STREAMING
@@ -125,10 +192,23 @@ for i in range(len(logs)):
         ml_status = "Normal"
 
     # ==================================================
-    # SOC DECISION
+    # SOC DECISION LOGIC
     # ==================================================
 
-    if severity == "HIGH" or anomaly == -1:
+    if (
+        severity == "HIGH"
+        and ml_status == "Suspicious"
+        and abuse_score > 70
+    ):
+
+        decision = (
+            "BLOCK IP IMMEDIATELY"
+        )
+
+    elif (
+        severity == "HIGH"
+        or ml_status == "Suspicious"
+    ):
 
         decision = (
             "Escalate to SOC Analyst"
@@ -137,7 +217,7 @@ for i in range(len(logs)):
     elif severity == "MEDIUM":
 
         decision = (
-            "Monitor Activity"
+            "Send Security Warning"
         )
 
     else:
@@ -207,7 +287,17 @@ for i in range(len(logs)):
 
         "Severity": severity,
 
-        "AI Threat Analysis": ai_response
+        "AI Threat Analysis": ai_response,
+
+        "AbuseIPDB Score": abuse_score,
+
+        "VirusTotal Detections": vt_score,
+
+        "Risk Score": risk_score,
+
+        "ML Status": ml_status,
+
+        "SOC Decision": decision
     })
 
     # ==================================================
@@ -278,7 +368,6 @@ for i in range(len(logs)):
 
         # ==================================================
         # SECTION 1
-        # LOGS + CURRENT SUMMARY
         # ==================================================
 
         col1, col2 = st.columns(2)
@@ -344,23 +433,10 @@ for i in range(len(logs)):
                     "Low Severity Activity"
                 )
 
-            if anomaly == -1:
-
-                st.error(
-                    "ML Model Detected Suspicious Activity"
-                )
-
-            else:
-
-                st.success(
-                    "ML Model Indicates Normal Activity"
-                )
-
         st.divider()
 
         # ==================================================
         # SECTION 2
-        # THREAT TABLE + PIE CHART
         # ==================================================
 
         col3, col4 = st.columns(2)
@@ -372,10 +448,15 @@ for i in range(len(logs)):
             )
 
             threat_df = analysis_df[[
+
                 "IP",
+
                 "AbuseIPDB Score",
+
                 "VirusTotal Detections",
+
                 "Risk Score",
+
                 "Severity"
             ]]
 
@@ -410,7 +491,6 @@ for i in range(len(logs)):
 
         # ==================================================
         # SECTION 3
-        # RISK TREND + COUNTRY ANALYSIS
         # ==================================================
 
         col5, col6 = st.columns(2)
@@ -459,7 +539,6 @@ for i in range(len(logs)):
 
         # ==================================================
         # SECTION 4
-        # SOC TABLE + FAILED LOGIN GRAPH
         # ==================================================
 
         col7, col8 = st.columns(2)
@@ -505,7 +584,7 @@ for i in range(len(logs)):
             "AI SOC Incident Reports"
         )
 
-        for index, row in ai_df.iterrows():
+        for idx, row in ai_df.iterrows():
 
             with st.expander(
                 f"{row['IP']} | {row['Severity']}"
@@ -514,6 +593,30 @@ for i in range(len(logs)):
                 st.write(
                     row["AI Threat Analysis"]
                 )
+
+                pdf_file = generate_pdf_report(
+                    row["IP"],
+                    row["Severity"],
+                    row["ML Status"],
+                    row["AbuseIPDB Score"],
+                    row["VirusTotal Detections"],
+                    row["Risk Score"],
+                    row["SOC Decision"],
+                    row["AI Threat Analysis"]
+                )
+
+                with open(
+                    pdf_file,
+                    "rb"
+                ) as file:
+
+                    st.download_button(
+                        label=f"Download Report - {row['IP']}",
+                        data=file,
+                        file_name=pdf_file,
+                        mime="application/pdf",
+                        key=f"download_{idx}_{i}_{row['IP']}"
+                    )
 
     # ==================================================
     # REAL-TIME DELAY
