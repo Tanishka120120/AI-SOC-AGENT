@@ -31,7 +31,7 @@ The system is designed to:
 | Threat Intelligence | VirusTotal API, AbuseIPDB API |
 | Data Processing | Pandas |
 | AI/ML | Scikit-learn |
-| Visualization | Matplotlib |
+| Visualization | Matplotlib, Seaborne |
 | Version Control | Git & GitHub |
 
 ---
